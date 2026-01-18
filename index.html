@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -18,9 +17,7 @@
             color: #fff;
             padding: 20px;
         }
-
         .container { text-align: center; max-width: 420px; width: 100%; }
-
         .hotel-header { margin-bottom: 40px; }
         .hotel-brand {
             font-family: 'Playfair Display', serif;
@@ -43,14 +40,12 @@
             margin-top: 12px;
             letter-spacing: 3px;
         }
-
         .room-card {
             background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
             border: 1px solid rgba(201, 162, 39, 0.3);
             border-radius: 20px;
             padding: 35px;
             margin-bottom: 35px;
-            backdrop-filter: blur(10px);
         }
         .room-label {
             font-size: 12px;
@@ -72,7 +67,6 @@
             color: #c9a227;
             font-weight: 400;
         }
-
         .call-section { margin-bottom: 30px; }
         .call-button {
             width: 100px;
@@ -92,21 +86,13 @@
         }
         .call-button:hover { transform: scale(1.05); }
         .call-button:active { transform: scale(0.98); }
-        .call-button.active {
+        .call-button.calling {
             background: linear-gradient(145deg, #e74c3c, #c0392b);
             box-shadow: 0 10px 40px rgba(231, 76, 60, 0.3);
             animation: pulse 2s infinite;
         }
-        .call-button:disabled {
-            background: #444;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-        }
-
+        .call-button:disabled { background: #444; cursor: not-allowed; box-shadow: none; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         .status {
             font-size: 14px;
             color: #888;
@@ -116,7 +102,6 @@
         }
         .status.active { color: #4CAF50; }
         .status.error { color: #e74c3c; }
-
         .info-section {
             background: rgba(255,255,255,0.03);
             border-radius: 12px;
@@ -125,31 +110,16 @@
         }
         .info-title { font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 10px; }
         .info-text { font-size: 12px; color: #888; line-height: 1.7; }
-
-        .services {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
+        .services { display: flex; justify-content: center; gap: 25px; margin-bottom: 25px; flex-wrap: wrap; }
         .service-item { text-align: center; }
         .service-icon { font-size: 24px; margin-bottom: 6px; }
         .service-label { font-size: 10px; color: #888; letter-spacing: 1px; text-transform: uppercase; }
-
         .languages { font-size: 10px; color: #555; letter-spacing: 3px; }
-
-        .footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
+        .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
         .footer-text { font-size: 10px; color: #444; letter-spacing: 2px; }
-
         .hidden { display: none !important; }
         .loading-spinner {
-            width: 35px;
-            height: 35px;
+            width: 35px; height: 35px;
             border: 2px solid rgba(201, 162, 39, 0.2);
             border-top-color: #c9a227;
             border-radius: 50%;
@@ -157,7 +127,6 @@
             margin: 0 auto 15px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .error-container {
             background: rgba(231, 76, 60, 0.1);
             border: 1px solid rgba(231, 76, 60, 0.3);
@@ -176,27 +145,22 @@
             <p class="hotel-sub">by Hilton</p>
             <p class="hotel-location">VAN</p>
         </div>
-
         <div class="room-card">
             <p class="room-label">Oda</p>
             <h2 class="room-number" id="roomNumber">---</h2>
             <p class="welcome-text">Hosgeldiniz</p>
         </div>
-
         <div id="loadingSpinner" class="loading-spinner"></div>
-
         <div id="errorContainer" class="error-container hidden">
             <h3>Baglanti Hatasi</h3>
             <p id="errorMessage"></p>
         </div>
-
         <div class="call-section">
             <button class="call-button hidden" id="callButton" disabled>
-                <span id="callIcon">&#128222;</span>
+                <span id="callIcon">📞</span>
             </button>
             <p class="status" id="status">Yukleniyor...</p>
         </div>
-
         <div class="info-section">
             <p class="info-title">7/24 Sesli Asistan</p>
             <p class="info-text">
@@ -204,44 +168,30 @@
                 Oda servisi, teknik destek veya herhangi bir talebiniz icin yardimci olabiliriz.
             </p>
         </div>
-
         <div class="services">
-            <div class="service-item">
-                <div class="service-icon">🍽️</div>
-                <div class="service-label">Oda Servisi</div>
-            </div>
-            <div class="service-item">
-                <div class="service-icon">🔧</div>
-                <div class="service-label">Teknik</div>
-            </div>
-            <div class="service-item">
-                <div class="service-icon">🛎️</div>
-                <div class="service-label">Resepsiyon</div>
-            </div>
-            <div class="service-item">
-                <div class="service-icon">💆</div>
-                <div class="service-label">Spa</div>
-            </div>
+            <div class="service-item"><div class="service-icon">🍽️</div><div class="service-label">Oda Servisi</div></div>
+            <div class="service-item"><div class="service-icon">🔧</div><div class="service-label">Teknik</div></div>
+            <div class="service-item"><div class="service-icon">🛎️</div><div class="service-label">Resepsiyon</div></div>
+            <div class="service-item"><div class="service-icon">💆</div><div class="service-label">Spa</div></div>
         </div>
-
         <div class="languages">TR | EN | DE | AR | FA</div>
-
-        <div class="footer">
-            <p class="footer-text">POWERED BY VOICEDESK.AI</p>
-        </div>
+        <div class="footer"><p class="footer-text">POWERED BY VOICEDESK.AI</p></div>
     </div>
 
-    <script>
-        // Get URL parameters
+    <!-- VAPI Web SDK -->
+    <script type="module">
+        import Vapi from 'https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm';
+
+        // URL Parameters
         const urlParams = new URLSearchParams(window.location.search);
         const assistantId = urlParams.get('assistant_id');
         const tenantSlug = urlParams.get('tenant_slug') || 'hiltonvan';
         const roomNumber = urlParams.get('room_number') || '---';
 
-        // VAPI Configuration
+        // VAPI Public Key
         const VAPI_PUBLIC_KEY = '77b7ab3c-8e81-498a-93eb-148a3a406b88';
 
-        // DOM elements
+        // DOM
         const roomNumberEl = document.getElementById('roomNumber');
         const callButton = document.getElementById('callButton');
         const callIcon = document.getElementById('callIcon');
@@ -250,10 +200,10 @@
         const errorMessage = document.getElementById('errorMessage');
         const loadingSpinner = document.getElementById('loadingSpinner');
 
-        // Update room display
         roomNumberEl.textContent = roomNumber;
 
-        let vapiInstance = null;
+        let vapi = null;
+        let isCallActive = false;
 
         function showError(msg) {
             errorContainer.classList.remove('hidden');
@@ -271,61 +221,69 @@
             statusEl.className = 'status';
         }
 
-        // Check assistant ID
-        if (!assistantId) {
-            showError('Assistant ID eksik. Lutfen gecerli bir QR kod kullanin.');
-        } else {
-            // Load VAPI SDK
-            (function(d, t) {
-                var g = document.createElement(t),
-                    s = d.getElementsByTagName(t)[0];
-                g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-                g.defer = true;
-                g.async = true;
-                s.parentNode.insertBefore(g, s);
+        async function init() {
+            if (!assistantId) {
+                showError('Assistant ID eksik.');
+                return;
+            }
 
-                g.onload = function() {
-                    console.log('VAPI SDK loaded');
-                    try {
-                        // Initialize VAPI with assistant overrides for room_number
-                        vapiInstance = window.vapiSDK.run({
-                            apiKey: VAPI_PUBLIC_KEY,
-                            assistant: assistantId,
-                            config: {
-                                hideButton: true, // We'll use our own button
-                                assistantOverrides: {
-                                    variableValues: {
-                                        tenant_slug: tenantSlug,
-                                        room_number: roomNumber
-                                    }
-                                }
-                            }
-                        });
-                        showReady();
-                    } catch (e) {
-                        console.error('VAPI init error:', e);
-                        showError('Sesli asistan baslatilamadi: ' + e.message);
-                    }
-                };
+            try {
+                vapi = new Vapi(VAPI_PUBLIC_KEY);
 
-                g.onerror = function() {
-                    showError('VAPI SDK yuklenemedi. Lutfen sayfayi yenileyin.');
-                };
-            })(document, "script");
+                vapi.on('call-start', () => {
+                    isCallActive = true;
+                    callButton.classList.add('calling');
+                    callIcon.textContent = '🔴';
+                    statusEl.textContent = 'Gorusme devam ediyor...';
+                    statusEl.className = 'status active';
+                });
+
+                vapi.on('call-end', () => {
+                    isCallActive = false;
+                    callButton.classList.remove('calling');
+                    callIcon.textContent = '📞';
+                    statusEl.textContent = 'Aramak icin dokunun';
+                    statusEl.className = 'status';
+                });
+
+                vapi.on('error', (e) => {
+                    console.error('VAPI Error:', e);
+                    isCallActive = false;
+                    callButton.classList.remove('calling');
+                    showError('Baglanti hatasi: ' + (e.message || 'Bilinmeyen hata'));
+                });
+
+                showReady();
+            } catch (e) {
+                console.error('Init error:', e);
+                showError('SDK yuklenemedi: ' + e.message);
+            }
         }
 
-        // Call button click handler
-        callButton.addEventListener('click', function() {
-            if (vapiInstance) {
+        async function toggleCall() {
+            if (!vapi) return;
+
+            if (isCallActive) {
+                vapi.stop();
+            } else {
+                statusEl.textContent = 'Baglaniyor...';
                 try {
-                    vapiInstance.toggle();
-                    statusEl.textContent = 'Baglaniyor...';
+                    // Start call with variableValues for room_number
+                    await vapi.start(assistantId, {
+                        variableValues: {
+                            room_number: roomNumber,
+                            tenant_slug: tenantSlug
+                        }
+                    });
                 } catch (e) {
-                    console.error('Toggle error:', e);
-                    showError('Arama baslatilamadi: ' + e.message);
+                    console.error('Start error:', e);
+                    showError('Arama baslatilamadi. Mikrofon izni verdiginizden emin olun.');
                 }
             }
-        });
+        }
+
+        callButton.addEventListener('click', toggleCall);
+        init();
     </script>
 </body>
 </html>
