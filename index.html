@@ -179,13 +179,8 @@
     </div>
 
     <!-- VAPI Web SDK -->
-    <script type="module">
-        // Import VAPI SDK from jsdelivr (CORS enabled)
-        import * as VapiModule from 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.2.3/+esm';
-        // Handle different export formats - log to debug
-        console.log('VapiModule:', VapiModule);
-        const Vapi = VapiModule.default || VapiModule.Vapi || VapiModule;
-
+    <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
+    <script>
         // URL Parameters
         const urlParams = new URLSearchParams(window.location.search);
         const assistantId = urlParams.get('assistant_id');
@@ -195,7 +190,7 @@
         // VAPI Public Key
         const VAPI_PUBLIC_KEY = '77b7ab3c-8e81-498a-93eb-148a3a406b88';
 
-        // DOM
+        // DOM Elements
         const roomNumberEl = document.getElementById('roomNumber');
         const callButton = document.getElementById('callButton');
         const callIcon = document.getElementById('callIcon');
@@ -204,9 +199,10 @@
         const errorMessage = document.getElementById('errorMessage');
         const loadingSpinner = document.getElementById('loadingSpinner');
 
+        // Set room number display
         roomNumberEl.textContent = roomNumber;
 
-        let vapi = null;
+        let vapiInstance = null;
         let isCallActive = false;
 
         function showError(msg) {
@@ -231,49 +227,67 @@
                 return;
             }
 
+            // Check if vapiSDK is available
+            if (typeof window.vapiSDK === 'undefined') {
+                showError('SDK yuklenemedi. Sayfayi yenileyin.');
+                return;
+            }
+
             try {
-                vapi = new Vapi(VAPI_PUBLIC_KEY);
-
-                vapi.on('call-start', () => {
-                    isCallActive = true;
-                    callButton.classList.add('calling');
-                    callIcon.textContent = '🔴';
-                    statusEl.textContent = 'Gorusme devam ediyor...';
-                    statusEl.className = 'status active';
+                // Initialize VAPI using the html-script-tag SDK
+                vapiInstance = window.vapiSDK.run({
+                    apiKey: VAPI_PUBLIC_KEY,
+                    assistant: assistantId,
+                    config: {
+                        hideButton: true,  // We use our own button
+                        position: 'bottom-right'
+                    }
                 });
 
-                vapi.on('call-end', () => {
-                    isCallActive = false;
-                    callButton.classList.remove('calling');
-                    callIcon.textContent = '📞';
-                    statusEl.textContent = 'Aramak icin dokunun';
-                    statusEl.className = 'status';
-                });
+                // Listen for events
+                if (vapiInstance) {
+                    vapiInstance.on('call-start', () => {
+                        isCallActive = true;
+                        callButton.classList.add('calling');
+                        callIcon.textContent = '🔴';
+                        statusEl.textContent = 'Gorusme devam ediyor...';
+                        statusEl.className = 'status active';
+                    });
 
-                vapi.on('error', (e) => {
-                    console.error('VAPI Error:', e);
-                    isCallActive = false;
-                    callButton.classList.remove('calling');
-                    showError('Baglanti hatasi: ' + (e.message || 'Bilinmeyen hata'));
-                });
+                    vapiInstance.on('call-end', () => {
+                        isCallActive = false;
+                        callButton.classList.remove('calling');
+                        callIcon.textContent = '📞';
+                        statusEl.textContent = 'Aramak icin dokunun';
+                        statusEl.className = 'status';
+                    });
+
+                    vapiInstance.on('error', (e) => {
+                        console.error('VAPI Error:', e);
+                        isCallActive = false;
+                        callButton.classList.remove('calling');
+                        callIcon.textContent = '📞';
+                        showError('Baglanti hatasi');
+                    });
+                }
 
                 showReady();
             } catch (e) {
                 console.error('Init error:', e);
-                showError('SDK yuklenemedi: ' + e.message);
+                showError('SDK baslatma hatasi: ' + e.message);
             }
         }
 
         async function toggleCall() {
-            if (!vapi) return;
+            if (!vapiInstance) return;
 
             if (isCallActive) {
-                vapi.stop();
+                vapiInstance.stop();
             } else {
                 statusEl.textContent = 'Baglaniyor...';
                 try {
-                    // Start call with assistantOverrides.variableValues for room_number
-                    await vapi.start(assistantId, {
+                    // Start call with assistantOverrides containing variableValues
+                    await vapiInstance.start(assistantId, {
                         assistantOverrides: {
                             variableValues: {
                                 room_number: roomNumber,
@@ -289,7 +303,20 @@
         }
 
         callButton.addEventListener('click', toggleCall);
-        init();
+
+        // Wait for SDK to load
+        if (typeof window.vapiSDK !== 'undefined') {
+            init();
+        } else {
+            // Retry after a short delay
+            setTimeout(function() {
+                if (typeof window.vapiSDK !== 'undefined') {
+                    init();
+                } else {
+                    showError('SDK yuklenemedi. Sayfayi yenileyin.');
+                }
+            }, 2000);
+        }
     </script>
 </body>
 </html>
