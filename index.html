@@ -136,6 +136,16 @@
         }
         .error-container h3 { color: #e74c3c; font-size: 14px; margin-bottom: 8px; }
         .error-container p { color: #e57373; font-size: 12px; }
+        /* Hide VAPI's default button visually but keep it functional */
+        #vapi-support-btn {
+            position: fixed !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            width: 1px !important;
+            height: 1px !important;
+            bottom: -100px !important;
+            right: -100px !important;
+        }
     </style>
 </head>
 <body>
@@ -246,7 +256,7 @@
                         }
                     },
                     config: {
-                        hideButton: true,  // We use our own button
+                        hideButton: false,  // Keep button in DOM, hide with CSS
                         position: 'bottom-right',
                         audioOutput: {
                             volume: 1.0  // Max volume (0.0 - 1.0)
@@ -298,8 +308,20 @@
             } else {
                 statusEl.textContent = 'Baglaniyor...';
                 try {
-                    // Start call - variableValues already passed in run() config
-                    await vapiInstance.start();
+                    // Find and click the VAPI button to properly trigger microphone permissions
+                    const vapiButton = document.getElementById('vapi-support-btn') ||
+                                       document.querySelector('[data-vapi-btn]') ||
+                                       document.querySelector('button[class*="vapi"]');
+
+                    if (vapiButton) {
+                        // Temporarily make it clickable
+                        vapiButton.style.pointerEvents = 'auto';
+                        vapiButton.click();
+                        vapiButton.style.pointerEvents = 'none';
+                    } else {
+                        // Fallback to direct start
+                        await vapiInstance.start();
+                    }
                 } catch (e) {
                     console.error('Start error:', e);
                     showError('Arama baslatilamadi. Mikrofon izni verdiginizden emin olun.');
