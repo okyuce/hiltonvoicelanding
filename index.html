@@ -180,9 +180,8 @@
 
     <!-- VAPI Web SDK -->
     <script type="module">
-        // Import VAPI SDK
-        import VapiClass from 'https://unpkg.com/@vapi-ai/web@2.2.3/dist/vapi.es.js';
-        const Vapi = VapiClass;
+        // Import VAPI SDK from jsdelivr (CORS enabled)
+        import Vapi from 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.2.3/+esm';
 
         // URL Parameters
         const urlParams = new URLSearchParams(window.location.search);
