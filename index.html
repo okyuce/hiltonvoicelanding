@@ -181,7 +181,10 @@
     <!-- VAPI Web SDK -->
     <script type="module">
         // Import VAPI SDK from jsdelivr (CORS enabled)
-        import Vapi from 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.2.3/+esm';
+        import * as VapiModule from 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.2.3/+esm';
+        // Handle different export formats - log to debug
+        console.log('VapiModule:', VapiModule);
+        const Vapi = VapiModule.default || VapiModule.Vapi || VapiModule;
 
         // URL Parameters
         const urlParams = new URLSearchParams(window.location.search);
