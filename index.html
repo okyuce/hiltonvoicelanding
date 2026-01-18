@@ -235,14 +235,23 @@
 
             try {
                 // Initialize VAPI using the html-script-tag SDK
+                // Pass variableValues in assistantOverrides at initialization
                 vapiInstance = window.vapiSDK.run({
                     apiKey: VAPI_PUBLIC_KEY,
                     assistant: assistantId,
+                    assistantOverrides: {
+                        variableValues: {
+                            room_number: roomNumber,
+                            tenant_slug: tenantSlug
+                        }
+                    },
                     config: {
                         hideButton: true,  // We use our own button
                         position: 'bottom-right'
                     }
                 });
+
+                console.log('VAPI initialized with variableValues:', { room_number: roomNumber, tenant_slug: tenantSlug });
 
                 // Listen for events
                 if (vapiInstance) {
@@ -286,15 +295,8 @@
             } else {
                 statusEl.textContent = 'Baglaniyor...';
                 try {
-                    // Start call with assistantOverrides containing variableValues
-                    await vapiInstance.start(assistantId, {
-                        assistantOverrides: {
-                            variableValues: {
-                                room_number: roomNumber,
-                                tenant_slug: tenantSlug
-                            }
-                        }
-                    });
+                    // Start call - variableValues already passed in run() config
+                    await vapiInstance.start();
                 } catch (e) {
                     console.error('Start error:', e);
                     showError('Arama baslatilamadi. Mikrofon izni verdiginizden emin olun.');
