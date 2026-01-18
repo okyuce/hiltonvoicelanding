@@ -179,9 +179,8 @@
     </div>
 
     <!-- VAPI Web SDK -->
-    <script type="module">
-        import Vapi from 'https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm';
-
+    <script src="https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.2.3/dist/vapi.umd.min.js"></script>
+    <script>
         // URL Parameters
         const urlParams = new URLSearchParams(window.location.search);
         const assistantId = urlParams.get('assistant_id');
@@ -221,13 +220,19 @@
             statusEl.className = 'status';
         }
 
-        async function init() {
+        function init() {
             if (!assistantId) {
                 showError('Assistant ID eksik.');
                 return;
             }
 
             try {
+                // VAPI UMD build exposes global Vapi
+                if (typeof Vapi === 'undefined') {
+                    showError('SDK yuklenemedi. Sayfayi yenileyin.');
+                    return;
+                }
+
                 vapi = new Vapi(VAPI_PUBLIC_KEY);
 
                 vapi.on('call-start', () => {
@@ -285,7 +290,13 @@
         }
 
         callButton.addEventListener('click', toggleCall);
-        init();
+
+        // Wait for DOM and SDK to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     </script>
 </body>
 </html>
