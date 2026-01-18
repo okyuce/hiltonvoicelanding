@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sesli Asistan - DoubleTree by Hilton Van</title>
+    <script src="https://cdn.jsdelivr.net/npm/@vapi-ai/web@latest/dist/vapi-web.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        /* Header - Hotel Branding */
+        .hotel-header {
+            margin-bottom: 40px;
+        }
+
+        .hotel-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .hotel-sub {
+            font-size: 11px;
+            letter-spacing: 6px;
+            color: #c9a227;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .hotel-location {
+            font-size: 14px;
+            color: #888;
+            margin-top: 12px;
+            letter-spacing: 3px;
+        }
+
+        /* Room Card */
+        .room-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 35px;
+            backdrop-filter: blur(10px);
+        }
+
+        .room-label {
+            font-size: 12px;
+            letter-spacing: 4px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .room-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 80px;
+            font-weight: 400;
+            color: #fff;
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        .welcome-text {
+            font-size: 15px;
+            color: #c9a227;
+            font-weight: 400;
+        }
+
+        /* Call Button */
+        .call-section {
+            margin-bottom: 30px;
+        }
+
+        .call-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(145deg, #c9a227, #a8861e);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(201, 162, 39, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .call-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(201, 162, 39, 0.4);
+        }
+
+        .call-button:active {
+            transform: scale(0.98);
+        }
+
+        .call-button.active {
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            box-shadow: 0 10px 40px rgba(231, 76, 60, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .call-button:disabled {
+            background: #444;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .status {
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
+            min-height: 20px;
+            font-weight: 300;
+        }
+
+        .status.connecting {
+            color: #c9a227;
+        }
+
+        .status.active {
+            color: #4CAF50;
+        }
+
+        .status.error {
+            color: #e74c3c;
+        }
+
+        /* Info Section */
+        .info-section {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.7;
+        }
+
+        /* Services */
+        .services {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .service-item {
+            text-align: center;
+        }
+
+        .service-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .service-label {
+            font-size: 10px;
+            color: #888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Languages */
+        .languages {
+            font-size: 10px;
+            color: #555;
+            letter-spacing: 3px;
+        }
+
+        /* Volume indicator */
+        .volume-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 15px;
+            height: 25px;
+            align-items: flex-end;
+        }
+
+        .volume-bar {
+            width: 5px;
+            background: #c9a227;
+            border-radius: 3px;
+            transition: height 0.1s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Loading */
+        .loading-spinner {
+            width: 35px;
+            height: 35px;
+            border: 2px solid rgba(201, 162, 39, 0.2);
+            border-top-color: #c9a227;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error */
+        .error-container {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .error-container h3 {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .error-container p {
+            color: #e57373;
+            font-size: 12px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-text {
+            font-size: 10px;
+            color: #444;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hotel Header -->
+        <div class="hotel-header">
+            <h1 class="hotel-brand">DoubleTree</h1>
+            <p class="hotel-sub">by Hilton</p>
+            <p class="hotel-location">VAN</p>
+        </div>
+
+        <!-- Room Card -->
+        <div class="room-card">
+            <p class="room-label">Oda</p>
+            <h2 class="room-number" id="roomNumber">---</h2>
+            <p class="welcome-text">Hosgeldiniz</p>
+        </div>
+
+        <!-- Loading -->
+        <div id="loadingSpinner" class="loading-spinner"></div>
+
+        <!-- Error -->
+        <div id="errorContainer" class="error-container hidden">
+            <h3>Baglanti Hatasi</h3>
+            <p id="errorMessage"></p>
+        </div>
+
+        <!-- Call Section -->
+        <div class="call-section">
+            <button class="call-button hidden" id="callButton" disabled>
+                <span id="callIcon">&#128222;</span>
+            </button>
+            <p class="status" id="status">Yukleniyor...</p>
+
+            <div class="volume-indicator hidden" id="volumeIndicator">
+                <div class="volume-bar" style="height: 8px;"></div>
+                <div class="volume-bar" style="height: 12px;"></div>
+                <div class="volume-bar" style="height: 18px;"></div>
+                <div class="volume-bar" style="height: 12px;"></div>
+                <div class="volume-bar" style="height: 8px;"></div>
+            </div>
+        </div>
+
+        <!-- Info -->
+        <div class="info-section">
+            <p class="info-title">7/24 Sesli Asistan</p>
+            <p class="info-text">
+                Butona dokunarak sesli asistanimiza ulasabilirsiniz.<br>
+                Oda servisi, teknik destek veya herhangi bir talebiniz icin yardimci olabiliriz.
+            </p>
+        </div>
+
+        <!-- Services -->
+        <div class="services">
+            <div class="service-item">
+                <div class="service-icon">🍽️</div>
+                <div class="service-label">Oda Servisi</div>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">🔧</div>
+                <div class="service-label">Teknik</div>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">🛎️</div>
+                <div class="service-label">Resepsiyon</div>
+            </div>
+            <div class="service-item">
+                <div class="service-icon">💆</div>
+                <div class="service-label">Spa</div>
+            </div>
+        </div>
+
+        <!-- Languages -->
+        <div class="languages">
+            TR | EN | DE | AR | FA
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">POWERED BY VOICEDESK.AI</p>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const assistantId = urlParams.get('assistant_id');
+        const tenantSlug = urlParams.get('tenant_slug') || 'hiltonvan';
+        const roomNumber = urlParams.get('room_number') || '---';
+
+        // DOM elements
+        const roomNumberEl = document.getElementById('roomNumber');
+        const callButton = document.getElementById('callButton');
+        const callIcon = document.getElementById('callIcon');
+        const statusEl = document.getElementById('status');
+        const errorContainer = document.getElementById('errorContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const volumeIndicator = document.getElementById('volumeIndicator');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Update room display
+        roomNumberEl.textContent = roomNumber;
+
+        let vapi = null;
+        let isCallActive = false;
+        let vapiPublicKey = null;
+
+        // Initialize VAPI
+        async function initVapi() {
+            try {
+                // Check if assistant_id is provided
+                if (!assistantId) {
+                    throw new Error('Assistant ID eksik. Lutfen gecerli bir QR kod kullanin.');
+                }
+
+                // Try to get public key from API, fallback to hardcoded
+                try {
+                    const apiUrl = 'https://criselda-grimmest-biannually.ngrok-free.dev';
+                    const response = await fetch(`${apiUrl}/api/v1/widget/${tenantSlug}/config`, {
+                        headers: { 'ngrok-skip-browser-warning': 'true' }
+                    });
+                    if (response.ok) {
+                        const config = await response.json();
+                        vapiPublicKey = config.vapi_public_key;
+                    }
+                } catch (e) {
+                    console.log('Could not fetch config, using provided key');
+                }
+
+                // Fallback to URL param or default
+                if (!vapiPublicKey) {
+                    vapiPublicKey = urlParams.get('public_key') || '77b7ab3c-8e81-498a-93eb-148a3a406b88';
+                }
+
+                // Initialize VAPI with public key
+                vapi = new Vapi(vapiPublicKey);
+
+                // Set up event listeners
+                vapi.on('call-start', () => {
+                    console.log('Call started');
+                    isCallActive = true;
+                    updateUI('active');
+                });
+
+                vapi.on('call-end', () => {
+                    console.log('Call ended');
+                    isCallActive = false;
+                    updateUI('idle');
+                });
+
+                vapi.on('speech-start', () => {
+                    volumeIndicator.classList.remove('hidden');
+                });
+
+                vapi.on('speech-end', () => {
+                    volumeIndicator.classList.add('hidden');
+                });
+
+                vapi.on('error', (error) => {
+                    console.error('VAPI Error:', error);
+                    showError('Baglanti hatasi. Lutfen tekrar deneyin.');
+                    isCallActive = false;
+                    updateUI('error');
+                });
+
+                vapi.on('volume-level', (volume) => {
+                    updateVolumeBars(volume);
+                });
+
+                // Hide loading, show button
+                loadingSpinner.classList.add('hidden');
+                callButton.classList.remove('hidden');
+                updateUI('idle');
+                statusEl.textContent = 'Aramak icin dokunun';
+                callButton.disabled = false;
+
+            } catch (error) {
+                console.error('Failed to initialize VAPI:', error);
+                loadingSpinner.classList.add('hidden');
+                showError(error.message || 'Sesli asistan baslatilamadi. Sayfayi yenileyin.');
+            }
+        }
+
+        function showError(message) {
+            errorContainer.classList.remove('hidden');
+            errorMessage.textContent = message;
+            statusEl.textContent = 'Hata';
+            statusEl.className = 'status error';
+        }
+
+        function updateUI(state) {
+            switch (state) {
+                case 'idle':
+                    callButton.classList.remove('active');
+                    callIcon.innerHTML = '&#128222;';
+                    statusEl.textContent = 'Aramak icin dokunun';
+                    statusEl.className = 'status';
+                    volumeIndicator.classList.add('hidden');
+                    break;
+                case 'connecting':
+                    callButton.classList.add('active');
+                    callIcon.innerHTML = '&#8230;';
+                    statusEl.textContent = 'Baglaniyor...';
+                    statusEl.className = 'status connecting';
+                    break;
+                case 'active':
+                    callButton.classList.add('active');
+                    callIcon.innerHTML = '&#9632;';
+                    statusEl.textContent = 'Gorusme devam ediyor';
+                    statusEl.className = 'status active';
+                    break;
+                case 'error':
+                    callButton.classList.remove('active');
+                    callIcon.innerHTML = '&#128222;';
+                    statusEl.textContent = 'Tekrar denemek icin dokunun';
+                    statusEl.className = 'status error';
+                    break;
+            }
+        }
+
+        function updateVolumeBars(volume) {
+            const bars = volumeIndicator.querySelectorAll('.volume-bar');
+            const normalizedVolume = Math.min(1, Math.max(0, volume));
+            bars.forEach((bar, index) => {
+                const baseHeight = 8 + (index < 2 ? index * 4 : (4 - index) * 4);
+                const height = baseHeight + (normalizedVolume * 15);
+                bar.style.height = `${height}px`;
+            });
+        }
+
+        async function toggleCall() {
+            if (!vapi) {
+                showError('Sesli asistan hazir degil. Sayfayi yenileyin.');
+                return;
+            }
+
+            if (isCallActive) {
+                try {
+                    await vapi.stop();
+                    isCallActive = false;
+                    updateUI('idle');
+                } catch (error) {
+                    console.error('Error ending call:', error);
+                }
+            } else {
+                updateUI('connecting');
+                try {
+                    // Start call with room_number variable
+                    await vapi.start(assistantId, {
+                        assistantOverrides: {
+                            variableValues: {
+                                tenant_slug: tenantSlug,
+                                room_number: roomNumber
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error starting call:', error);
+                    showError('Arama baslatilamadi. Mikrofon izni verdiginizden emin olun.');
+                    updateUI('error');
+                }
+            }
+        }
+
+        // Event listeners
+        callButton.addEventListener('click', toggleCall);
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initVapi);
+    </script>
+</body>
+</html>
