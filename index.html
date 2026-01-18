@@ -268,11 +268,13 @@
             } else {
                 statusEl.textContent = 'Baglaniyor...';
                 try {
-                    // Start call with variableValues for room_number
+                    // Start call with assistantOverrides.variableValues for room_number
                     await vapi.start(assistantId, {
-                        variableValues: {
-                            room_number: roomNumber,
-                            tenant_slug: tenantSlug
+                        assistantOverrides: {
+                            variableValues: {
+                                room_number: roomNumber,
+                                tenant_slug: tenantSlug
+                            }
                         }
                     });
                 } catch (e) {
